@@ -1,0 +1,54 @@
+[
+  {
+    "id": "69cc0a52-c80f-4781-b620-74e5c07cf154",
+    "productName": "Aplikasi Cek Desil Massal Kemensos (DTSEN)",
+    "customerName": "Budi Santoso",
+    "customerEmail": "budi.santoso@gmail.com",
+    "customerPhone": "081298765432",
+    "amount": 150000,
+    "pricingType": "ONETIME",
+    "paymentMethod": "Transfer Bank BCA",
+    "status": "PAID",
+    "createdAt": "2026-08-29T13:13:56.155Z",
+    "notes": "Order lisensi via WA"
+  },
+  {
+    "id": "424d8199-0a10-4395-a8a2-28c593bcf599",
+    "productName": "Aplikasi Cek Desil Massal Kemensos (DTSEN)",
+    "customerName": "Dinas Sosial Kabupaten X",
+    "customerEmail": "dinsos.kabx@gmail.com",
+    "customerPhone": "081311223344",
+    "amount": 150000,
+    "pricingType": "ONETIME",
+    "paymentMethod": "QRIS",
+    "status": "PAID",
+    "createdAt": "2026-08-30T13:13:56.155Z",
+    "notes": "Akses 1 device tim verifikator"
+  },
+  {
+    "id": "6c06efe8-afba-445d-94d0-a00ad70c4f74",
+    "productName": "SAKOLA - Sistem Manajemen Sekolah & Absensi WA SaaS",
+    "customerName": "SMK Mitra Bangsa",
+    "customerEmail": "admin@smkmitrabangsa.sch.id",
+    "customerPhone": "085712349988",
+    "amount": 99000,
+    "pricingType": "MONTHLY",
+    "paymentMethod": "Transfer Bank Mandiri",
+    "status": "PAID",
+    "createdAt": "2026-08-27T13:13:56.155Z",
+    "notes": "Langganan Bulan Pertama (450 Siswa)"
+  },
+  {
+    "id": "399fbe4f-6fac-4288-8150-de30b1bfdf8d",
+    "productName": "Jurnal Ramadhan Digital Interaktif",
+    "customerName": "Yayasan Nurul Fikri",
+    "customerEmail": "nurulfikri.edu@gmail.com",
+    "customerPhone": "081809988776",
+    "amount": 350000,
+    "pricingType": "YEARLY",
+    "paymentMethod": "Transfer Bank BSI",
+    "status": "PAID",
+    "createdAt": "2026-08-22T13:13:56.155Z",
+    "notes": "Lisensi 1 Tahun Ajaran"
+  }
+]
