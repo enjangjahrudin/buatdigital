@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const productService = require('./services/productService');
 const salesService = require('./services/salesService');
@@ -11,10 +13,42 @@ const { requireAdminAuth } = require('./middleware/authMiddleware');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Security Hardening: Disable X-Powered-By
+app.disable('x-powered-by');
+
+// Security Hardening: HTTP Security Headers via Helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Allows CDN scripts like Tailwind, Chart.js, FontAwesome, and Midtrans Snap
+    crossOriginEmbedderPolicy: false
+  })
+);
+
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Security Hardening: Rate Limiters
+const generalApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 300, // Max 300 requests per IP
+  message: { error: 'Terlalu banyak permintaan dari IP ini. Silakan coba lagi beberapa saat lagi.' }
+});
+
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 8, // Max 8 failed login attempts per 15 minutes to prevent brute-force
+  message: { error: 'Terlalu banyak percobaan login gagal. Demi keamanan, akun dibekukan selama 15 menit.' }
+});
+
+const checkoutLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Max 20 checkout attempts per 15 mins to prevent spam
+  message: { error: 'Terlalu banyak permintaan checkout. Silakan coba beberapa saat lagi.' }
+});
+
+app.use('/api/', generalApiLimiter);
 
 // Clean URL Routes
 app.get('/admin', (req, res) => {
@@ -30,7 +64,7 @@ app.get('/login', (req, res) => {
 // ==========================================
 
 // Create Snap Token for checkout
-app.post('/api/payment/create-snap', async (req, res) => {
+app.post('/api/payment/create-snap', checkoutLimiter, async (req, res) => {
   try {
     const { productId, customer } = req.body;
     if (!productId || !customer) {
@@ -114,8 +148,8 @@ app.get('/api/settings/public', (req, res) => {
 // 🛡️ ADMIN AUTH & DASHBOARD ENDPOINTS
 // ==========================================
 
-// Admin Login
-app.post('/api/admin/login', (req, res) => {
+// Admin Login with Brute-Force Rate Limiter
+app.post('/api/admin/login', adminLoginLimiter, (req, res) => {
   try {
     const { pin } = req.body;
     if (!pin) return res.status(400).json({ error: 'PIN Admin wajib diisi.' });
