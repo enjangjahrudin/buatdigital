@@ -82,3 +82,57 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .reveal, .stagger > *, .card-in, .animate-blob, .animate-blob-delay, .btn-pulse, .animate-gradient, .animate-float { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
 }
+
+/* ===== Motif Background (halus & elegan) ===== */
+/* Hero: titik-titik halus + cahaya biru/oranye di sudut */
+#hero {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(37,99,235,.10), transparent 38%),
+    radial-gradient(circle at 90% 12%, rgba(249,115,22,.12), transparent 34%),
+    radial-gradient(rgba(37,99,235,.16) 1.2px, transparent 1.3px);
+  background-size: auto, auto, 26px 26px;
+  animation: dotsDrift 40s linear infinite;
+}
+@keyframes dotsDrift { to { background-position: 0 0, 0 0, 260px 130px; } }
+
+/* Katalog: garis kisi tipis ala blueprint */
+#katalog {
+  background-color: #f8fafc;
+  background-image:
+    linear-gradient(rgba(37,99,235,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.055) 1px, transparent 1px),
+    radial-gradient(circle at 85% 90%, rgba(249,115,22,.08), transparent 40%);
+  background-size: 44px 44px, 44px 44px, auto;
+}
+
+/* Keunggulan: putih dengan cahaya lembut + titik */
+#keunggulan {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(circle at 8% 85%, rgba(249,115,22,.10), transparent 35%),
+    radial-gradient(circle at 95% 10%, rgba(37,99,235,.10), transparent 36%),
+    radial-gradient(rgba(15,23,42,.07) 1px, transparent 1.2px);
+  background-size: auto, auto, 22px 22px;
+}
+
+/* FAQ: garis diagonal sangat halus */
+#faq {
+  background-color: #f8fafc;
+  background-image:
+    repeating-linear-gradient(135deg, rgba(37,99,235,.045) 0, rgba(37,99,235,.045) 1px, transparent 1px, transparent 18px),
+    radial-gradient(circle at 50% 0%, rgba(249,115,22,.07), transparent 45%);
+}
+
+/* Garis pemisah gradien biru-oranye antar bagian */
+#katalog, #keunggulan, #faq { position: relative; }
+#katalog::before, #keunggulan::before, #faq::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #2563eb, #f97316, transparent);
+  opacity: .55;
+}
+
+/* Footer */
+footer { background-image: linear-gradient(180deg, #ffffff, #f1f5f9); }
+
+@media (prefers-reduced-motion: reduce) { #hero { animation: none; } }
