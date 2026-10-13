@@ -5,3 +5,6 @@ yarn-error.log*
 .DS_Store
 .env
 .env.local
+
+# Data runtime (berubah lewat panel admin di server)
+data/*.json
