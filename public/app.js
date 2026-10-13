@@ -21,37 +21,37 @@ function getPricingMeta(type) {
     case 'TOKEN':
       return {
         label: 'Paket Token / Top-Up',
-        badgeClass: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+        badgeClass: 'bg-cyan-50 text-cyan-700 border-cyan-200',
         suffix: '/ Paket Token'
       };
     case 'ONETIME':
       return {
         label: 'Sekali Bayar',
-        badgeClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+        badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
         suffix: '/ Sekali Bayar'
       };
     case 'MONTHLY':
       return {
         label: 'Langganan Bulanan',
-        badgeClass: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+        badgeClass: 'bg-blue-50 text-blue-700 border-blue-200',
         suffix: '/ Bulan'
       };
     case 'YEARLY':
       return {
         label: 'Langganan Tahunan',
-        badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+        badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
         suffix: '/ Tahun'
       };
     case 'FREE':
       return {
         label: 'Gratis',
-        badgeClass: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
+        badgeClass: 'bg-teal-50 text-teal-700 border-teal-200',
         suffix: ''
       };
     default:
       return {
         label: 'Custom / Project',
-        badgeClass: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+        badgeClass: 'bg-purple-50 text-purple-700 border-purple-200',
         suffix: ''
       };
   }
@@ -134,9 +134,9 @@ function setFilter(filter) {
   // Update button active state
   document.querySelectorAll('.filter-btn').forEach(btn => {
     if (btn.getAttribute('data-filter') === filter) {
-      btn.className = 'filter-btn active px-4 py-2 rounded-xl font-semibold transition-all bg-blue-600 text-white';
+      btn.className = 'filter-btn active px-4 py-2 rounded-xl font-semibold transition-all bg-blue-600 text-white shadow-sm';
     } else {
-      btn.className = 'filter-btn px-4 py-2 rounded-xl font-semibold transition-all bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700';
+      btn.className = 'filter-btn px-4 py-2 rounded-xl font-semibold transition-all bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 shadow-sm';
     }
   });
 
@@ -158,8 +158,8 @@ function renderProducts() {
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full py-16 text-center text-slate-500">
-        <i class="fa-solid fa-box-open text-4xl mb-3 block text-slate-600"></i>
+      <div class="col-span-full py-16 text-center text-slate-400">
+        <i class="fa-solid fa-box-open text-4xl mb-3 block text-slate-300"></i>
         <p class="text-sm">Belum ada produk dalam kategori ini.</p>
       </div>
     `;
@@ -172,14 +172,14 @@ function renderProducts() {
     const hasDiscount = product.discountPrice && product.discountPrice < product.price;
 
     const featuresList = (product.features || []).slice(0, 4).map(f => `
-      <li class="flex items-start gap-2 text-xs text-slate-300">
-        <i class="fa-solid fa-check text-emerald-400 mt-0.5 flex-shrink-0"></i>
+      <li class="flex items-start gap-2 text-xs text-slate-600">
+        <i class="fa-solid fa-check text-emerald-600 mt-0.5 flex-shrink-0"></i>
         <span>${f}</span>
       </li>
     `).join('');
 
     return `
-      <div class="bg-slate-900/90 border border-slate-800 hover:border-blue-500/50 rounded-3xl p-6 flex flex-col justify-between space-y-5 transition-all hover:shadow-2xl hover:shadow-blue-900/10 group">
+      <div class="bg-white border border-slate-200/90 hover:border-blue-400 rounded-3xl p-6 flex flex-col justify-between space-y-5 transition-all shadow-sm hover:shadow-xl hover:shadow-slate-200/50 group">
         
         <div class="space-y-4">
           <!-- Card Header / Badges -->
@@ -188,7 +188,7 @@ function renderProducts() {
               ${meta.label}
             </span>
             ${product.badge ? `
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                 <i class="fa-solid fa-star text-[9px] mr-1"></i> ${product.badge}
               </span>
             ` : ''}
@@ -196,22 +196,22 @@ function renderProducts() {
 
           <!-- Product Icon & Title -->
           <div class="flex items-start space-x-3.5 pt-1">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${product.thumbnailColor || 'from-blue-600 to-indigo-900'} flex items-center justify-center text-white text-xl shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${product.thumbnailColor || 'from-blue-600 to-indigo-700'} flex items-center justify-center text-white text-xl shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform">
               <i class="fa-solid ${product.icon || 'fa-cubes'}"></i>
             </div>
             <div>
               <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">${product.category || 'Aplikasi Web'}</span>
-              <h3 class="text-base font-bold text-white group-hover:text-blue-300 transition-colors leading-snug">${product.name}</h3>
+              <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">${product.name}</h3>
             </div>
           </div>
 
           <!-- Short Description -->
-          <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+          <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
             ${product.shortDesc || ''}
           </p>
 
           <!-- Key Features -->
-          <div class="pt-3 border-t border-slate-800/80">
+          <div class="pt-3 border-t border-slate-100">
             <ul class="space-y-2">
               ${featuresList}
             </ul>
@@ -219,19 +219,19 @@ function renderProducts() {
         </div>
 
         <!-- Pricing & Card Actions -->
-        <div class="pt-4 border-t border-slate-800 space-y-4">
+        <div class="pt-4 border-t border-slate-100 space-y-4">
           <!-- Price display -->
           <div class="flex items-baseline justify-between">
             <div>
               ${hasDiscount ? `
-                <span class="text-[11px] text-slate-500 line-through block">${formatRupiah(product.price)}</span>
+                <span class="text-[11px] text-slate-400 line-through block">${formatRupiah(product.price)}</span>
               ` : ''}
               <div class="flex items-baseline gap-1">
-                <span class="text-xl font-black text-white">${formatRupiah(finalPrice)}</span>
-                <span class="text-[11px] text-slate-400">${meta.suffix}</span>
+                <span class="text-xl font-black text-slate-900">${formatRupiah(finalPrice)}</span>
+                <span class="text-[11px] text-slate-500 font-medium">${meta.suffix}</span>
               </div>
             </div>
-            <button onclick="openProductModal('${product.id}')" class="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 hover:underline">
+            <button onclick="openProductModal('${product.id}')" class="text-xs text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 hover:underline">
               Detail Fitur &rarr;
             </button>
           </div>
@@ -239,20 +239,20 @@ function renderProducts() {
           <!-- Action Buttons -->
           <div class="grid grid-cols-2 gap-2">
             ${product.demoUrl && product.demoUrl !== '#' ? `
-              <a href="${product.demoUrl}" target="_blank" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 hover:border-slate-600 transition-all text-center">
+              <a href="${product.demoUrl}" target="_blank" class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-200 hover:border-slate-300 transition-all text-center">
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Coba Demo
               </a>
             ` : `
-              <button onclick="openProductModal('${product.id}')" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 transition-all text-center">
+              <button onclick="openProductModal('${product.id}')" class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-200 transition-all text-center">
                 <i class="fa-solid fa-circle-info text-[10px]"></i> Info Lengkap
               </button>
             `}
             ${product.externalCheckoutUrl ? `
-              <a href="${product.externalCheckoutUrl}" target="_blank" class="px-3 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-blue-900/30 transition-all text-center">
+              <a href="${product.externalCheckoutUrl}" target="_blank" class="px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all text-center">
                 <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> ${product.externalCheckoutLabel || 'Buka Aplikasi'}
               </a>
             ` : `
-              <button onclick="openCheckoutModal('${product.id}')" class="px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-900/30 transition-all text-center">
+              <button onclick="openCheckoutModal('${product.id}')" class="px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all text-center">
                 <i class="fa-solid fa-cart-shopping text-xs"></i> Pesan / Beli
               </button>
             `}
@@ -280,14 +280,14 @@ function openProductModal(productId) {
   document.getElementById('modalPricingType').innerText = meta.suffix;
 
   const iconBox = document.getElementById('modalIconBox');
-  iconBox.className = `w-12 h-12 rounded-2xl bg-gradient-to-br ${p.thumbnailColor || 'from-blue-600 to-indigo-900'} flex items-center justify-center text-white text-xl flex-shrink-0`;
+  iconBox.className = `w-12 h-12 rounded-2xl bg-gradient-to-br ${p.thumbnailColor || 'from-blue-600 to-indigo-700'} flex items-center justify-center text-white text-xl flex-shrink-0 shadow-sm`;
   document.getElementById('modalIcon').className = `fa-solid ${p.icon || 'fa-cubes'}`;
 
   // Features
   const featuresUl = document.getElementById('modalFeaturesList');
   featuresUl.innerHTML = (p.features || []).map(f => `
-    <li class="flex items-start gap-2 text-xs text-slate-300">
-      <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5 flex-shrink-0"></i>
+    <li class="flex items-start gap-2 text-xs text-slate-600">
+      <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 flex-shrink-0"></i>
       <span>${f}</span>
     </li>
   `).join('');

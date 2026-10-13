@@ -11,19 +11,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-slate-100 min-h-screen flex flex-col justify-between font-sans">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between font-sans selection:bg-blue-600 selection:text-white">
 
   <!-- Header -->
   <header class="p-6">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <a href="/" class="flex items-center space-x-3 group">
-        <img src="favicon.svg" alt="Logo" class="w-10 h-10 rounded-2xl shadow-lg border border-blue-400/30">
+        <img src="favicon.svg" alt="Logo" class="w-10 h-10 rounded-2xl shadow-sm border border-slate-200">
         <div>
-          <h1 class="text-base font-bold text-white tracking-tight">BuatDigital<span class="text-blue-400">.id</span></h1>
-          <p class="text-xs text-blue-300">Admin Control Center</p>
+          <h1 class="text-base font-bold text-slate-900 tracking-tight">BuatDigital<span class="text-blue-600">.id</span></h1>
+          <p class="text-xs text-slate-500">Admin Control Center</p>
         </div>
       </a>
-      <a href="/" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60">
+      <a href="/" class="text-xs text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50">
         <i class="fa-solid fa-arrow-left"></i> Kembali ke Web
       </a>
     </div>
@@ -31,7 +31,7 @@
 
   <!-- Login Form Main Card -->
   <main class="flex-1 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white text-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-100 space-y-6">
+    <div class="w-full max-w-md bg-white text-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-200 space-y-6">
 
       <div class="text-center space-y-2">
         <div class="inline-flex p-3.5 rounded-2xl bg-blue-50 text-blue-600 mb-1 border border-blue-100 shadow-sm">
@@ -54,7 +54,7 @@
           <p class="text-[11px] text-slate-400 mt-1.5">PIN Default: <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-slate-600">admin123</code></p>
         </div>
 
-        <button type="submit" id="loginBtn" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all">
+        <button type="submit" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all">
           <i class="fa-solid fa-unlock"></i> Masuk ke Dashboard
         </button>
       </form>
