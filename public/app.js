@@ -21,13 +21,13 @@ function getPricingMeta(type) {
     case 'TOKEN':
       return {
         label: 'Paket Token / Top-Up',
-        badgeClass: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+        badgeClass: 'bg-blue-50 text-blue-700 border-blue-200',
         suffix: '/ Paket Token'
       };
     case 'ONETIME':
       return {
         label: 'Sekali Bayar',
-        badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        badgeClass: 'bg-orange-50 text-orange-700 border-orange-200',
         suffix: '/ Sekali Bayar'
       };
     case 'MONTHLY':
@@ -39,19 +39,19 @@ function getPricingMeta(type) {
     case 'YEARLY':
       return {
         label: 'Langganan Tahunan',
-        badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
+        badgeClass: 'bg-orange-50 text-orange-700 border-orange-200',
         suffix: '/ Tahun'
       };
     case 'FREE':
       return {
         label: 'Gratis',
-        badgeClass: 'bg-teal-50 text-teal-700 border-teal-200',
+        badgeClass: 'bg-orange-50 text-orange-700 border-orange-200',
         suffix: ''
       };
     default:
       return {
         label: 'Custom / Project',
-        badgeClass: 'bg-purple-50 text-purple-700 border-purple-200',
+        badgeClass: 'bg-orange-50 text-orange-700 border-orange-200',
         suffix: ''
       };
   }
@@ -166,20 +166,20 @@ function renderProducts() {
     return;
   }
 
-  container.innerHTML = filtered.map(product => {
+  container.innerHTML = filtered.map((product, idx) => {
     const meta = getPricingMeta(product.pricingType);
     const finalPrice = product.discountPrice || product.price;
     const hasDiscount = product.discountPrice && product.discountPrice < product.price;
 
     const featuresList = (product.features || []).slice(0, 4).map(f => `
       <li class="flex items-start gap-2 text-xs text-slate-600">
-        <i class="fa-solid fa-check text-emerald-600 mt-0.5 flex-shrink-0"></i>
+        <i class="fa-solid fa-check text-orange-600 mt-0.5 flex-shrink-0"></i>
         <span>${f}</span>
       </li>
     `).join('');
 
     return `
-      <div class="bg-white border border-slate-200/90 hover:border-blue-400 rounded-3xl p-6 flex flex-col justify-between space-y-5 transition-all shadow-sm hover:shadow-xl hover:shadow-slate-200/50 group">
+      <div style="animation-delay:${idx*80}ms" class="card-in bg-white border border-slate-200/90 hover:border-orange-400 hover:-translate-y-1.5 rounded-3xl p-6 flex flex-col justify-between space-y-5 transition-all shadow-sm hover:shadow-xl hover:shadow-slate-200/50 group">
         
         <div class="space-y-4">
           <!-- Card Header / Badges -->
@@ -188,7 +188,7 @@ function renderProducts() {
               ${meta.label}
             </span>
             ${product.badge ? `
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-orange-50 text-orange-700 border border-orange-200">
                 <i class="fa-solid fa-star text-[9px] mr-1"></i> ${product.badge}
               </span>
             ` : ''}
@@ -196,7 +196,7 @@ function renderProducts() {
 
           <!-- Product Icon & Title -->
           <div class="flex items-start space-x-3.5 pt-1">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${product.thumbnailColor || 'from-blue-600 to-indigo-700'} flex items-center justify-center text-white text-xl shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${product.thumbnailColor || 'from-blue-600 to-blue-700'} flex items-center justify-center text-white text-xl shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform">
               <i class="fa-solid ${product.icon || 'fa-cubes'}"></i>
             </div>
             <div>
@@ -252,7 +252,7 @@ function renderProducts() {
                 <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> ${product.externalCheckoutLabel || 'Buka Aplikasi'}
               </a>
             ` : `
-              <button onclick="openCheckoutModal('${product.id}')" class="px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all text-center">
+              <button onclick="openCheckoutModal('${product.id}')" class="px-3 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all text-center">
                 <i class="fa-solid fa-cart-shopping text-xs"></i> Pesan / Beli
               </button>
             `}
@@ -280,14 +280,14 @@ function openProductModal(productId) {
   document.getElementById('modalPricingType').innerText = meta.suffix;
 
   const iconBox = document.getElementById('modalIconBox');
-  iconBox.className = `w-12 h-12 rounded-2xl bg-gradient-to-br ${p.thumbnailColor || 'from-blue-600 to-indigo-700'} flex items-center justify-center text-white text-xl flex-shrink-0 shadow-sm`;
+  iconBox.className = `w-12 h-12 rounded-2xl bg-gradient-to-br ${p.thumbnailColor || 'from-blue-600 to-blue-700'} flex items-center justify-center text-white text-xl flex-shrink-0 shadow-sm`;
   document.getElementById('modalIcon').className = `fa-solid ${p.icon || 'fa-cubes'}`;
 
   // Features
   const featuresUl = document.getElementById('modalFeaturesList');
   featuresUl.innerHTML = (p.features || []).map(f => `
     <li class="flex items-start gap-2 text-xs text-slate-600">
-      <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 flex-shrink-0"></i>
+      <i class="fa-solid fa-circle-check text-orange-600 mt-0.5 flex-shrink-0"></i>
       <span>${f}</span>
     </li>
   `).join('');
@@ -442,3 +442,11 @@ document.getElementById('checkoutModal').addEventListener('click', (e) => {
 });
 
 window.addEventListener('DOMContentLoaded', loadData);
+
+// Scroll reveal: bagian muncul saat di-scroll
+(function () {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  window.addEventListener('DOMContentLoaded', () => document.querySelectorAll('.reveal').forEach(el => io.observe(el)));
+})();
