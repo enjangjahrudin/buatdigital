@@ -556,16 +556,40 @@
             </select>
           </div>
 
+          <!-- PENGATURAN TAMPILAN HARGA -->
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">URL Pembayaran / Web Mandiri (Opsional)</label>
-            <input type="text" id="prodExternalCheckoutUrl" placeholder="Contoh: https://modulai.id (Kosongkan jika via Midtrans/WA)" 
-                   class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <label class="block text-xs font-bold text-slate-800 mb-1">Tampilkan Harga di Web? *</label>
+            <select id="prodShowPrice" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium">
+              <option value="true">Ya, Tampilkan Harga</option>
+              <option value="false">Sembunyikan Harga (Hubungi CS / Custom)</option>
+            </select>
+            <p class="text-[10px] text-slate-400 mt-1">Jika disembunyikan, angka nominal harga tidak akan muncul di kartu etalase maupun modal.</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Label Tombol Khusus (Opsional)</label>
-            <input type="text" id="prodExternalCheckoutLabel" placeholder="Contoh: Buka di ModulAI.id" 
-                   class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <!-- METODE TRANSAKSI & PEMBAYARAN -->
+          <div class="sm:col-span-2 p-3.5 bg-blue-50/50 border border-blue-200 rounded-2xl space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-blue-950 mb-1">Sistem Pembelian / Transaksi *</label>
+              <select id="prodCheckoutType" onchange="toggleCheckoutFields(this.value)" class="w-full px-3 py-2 text-xs border border-blue-300 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 font-semibold">
+                <option value="BUATDIGITAL">🛒 Pembelian & Pencatatan di BuatDigital.id (via Midtrans / WA)</option>
+                <option value="EXTERNAL">🔗 Pembelian Langsung di Website Aplikasi Masing-masing (Contoh: ModulAI.id)</option>
+              </select>
+              <p class="text-[11px] text-slate-500 mt-1">Tentukan apakah transaksi dicatat langsung di sistem BuatDigital.id atau dialihkan ke halaman web aplikasi mandiri.</p>
+            </div>
+
+            <div id="externalCheckoutFields" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-blue-100 hidden">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">URL Website / Aplikasi Mandiri *</label>
+                <input type="text" id="prodExternalCheckoutUrl" placeholder="https://modulai.id" 
+                       class="w-full px-3 py-2 text-xs border border-slate-300 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Label Tombol Khusus</label>
+                <input type="text" id="prodExternalCheckoutLabel" placeholder="Buka di ModulAI.id" 
+                       class="w-full px-3 py-2 text-xs border border-slate-300 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
+              </div>
+            </div>
           </div>
         </div>
 

@@ -178,6 +178,9 @@ function renderProducts() {
       </li>
     `).join('');
 
+    const isExternal = product.checkoutType === 'EXTERNAL' || (Boolean(product.externalCheckoutUrl) && product.checkoutType !== 'BUATDIGITAL');
+    const isPriceShown = product.showPrice !== false;
+
     return `
       <div style="animation-delay:${idx*80}ms" class="card-in bg-white border border-slate-200/90 hover:border-orange-400 hover:-translate-y-1.5 rounded-3xl p-6 flex flex-col justify-between space-y-5 transition-all shadow-sm hover:shadow-xl hover:shadow-slate-200/50 group">
         
@@ -221,15 +224,22 @@ function renderProducts() {
         <!-- Pricing & Card Actions -->
         <div class="pt-4 border-t border-slate-100 space-y-4">
           <!-- Price display -->
-          <div class="flex items-baseline justify-between">
+          <div class="flex items-baseline justify-between min-h-[38px]">
             <div>
-              ${hasDiscount ? `
-                <span class="text-[11px] text-slate-400 line-through block">${formatRupiah(product.price)}</span>
-              ` : ''}
-              <div class="flex items-baseline gap-1">
-                <span class="text-xl font-black text-slate-900">${formatRupiah(finalPrice)}</span>
-                <span class="text-[11px] text-slate-500 font-medium">${meta.suffix}</span>
-              </div>
+              ${isPriceShown ? `
+                ${hasDiscount ? `
+                  <span class="text-[11px] text-slate-400 line-through block">${formatRupiah(product.price)}</span>
+                ` : ''}
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xl font-black text-slate-900">${formatRupiah(finalPrice)}</span>
+                  <span class="text-[11px] text-slate-500 font-medium">${meta.suffix}</span>
+                </div>
+              ` : `
+                <div class="flex items-center gap-1.5 text-slate-600 font-semibold text-xs py-1">
+                  <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                  <span>Hubungi Kami / Kustom</span>
+                </div>
+              `}
             </div>
             <button onclick="openProductModal('${product.id}')" class="text-xs text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 hover:underline">
               Detail Fitur &rarr;
@@ -247,8 +257,8 @@ function renderProducts() {
                 <i class="fa-solid fa-circle-info text-[10px]"></i> Info Lengkap
               </button>
             `}
-            ${product.externalCheckoutUrl ? `
-              <a href="${product.externalCheckoutUrl}" target="_blank" class="px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all text-center">
+            ${isExternal ? `
+              <a href="${product.externalCheckoutUrl || product.appUrl || product.demoUrl || '#'}" target="_blank" class="px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all text-center">
                 <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> ${product.externalCheckoutLabel || 'Buka Aplikasi'}
               </a>
             ` : `
@@ -272,12 +282,27 @@ function openProductModal(productId) {
   currentSelectedProduct = p;
   const meta = getPricingMeta(p.pricingType);
   const finalPrice = p.discountPrice || p.price;
+  const isExternal = p.checkoutType === 'EXTERNAL' || (Boolean(p.externalCheckoutUrl) && p.checkoutType !== 'BUATDIGITAL');
+  const isPriceShown = p.showPrice !== false;
 
   document.getElementById('modalCategoryBadge').innerText = p.category || 'Aplikasi Web';
   document.getElementById('modalTitle').innerText = p.name;
   document.getElementById('modalFullDesc').innerText = p.fullDesc || p.shortDesc || '';
-  document.getElementById('modalPrice').innerText = formatRupiah(finalPrice);
-  document.getElementById('modalPricingType').innerText = meta.suffix;
+
+  // Modal Price Container
+  const priceBox = document.getElementById('modalPriceBox');
+  if (priceBox) {
+    if (isPriceShown) {
+      priceBox.classList.remove('hidden');
+      document.getElementById('modalPrice').innerText = formatRupiah(finalPrice);
+      document.getElementById('modalPricingType').innerText = meta.suffix;
+    } else {
+      priceBox.classList.add('hidden');
+    }
+  } else {
+    document.getElementById('modalPrice').innerText = isPriceShown ? formatRupiah(finalPrice) : 'Harga Kustom';
+    document.getElementById('modalPricingType').innerText = isPriceShown ? meta.suffix : '';
+  }
 
   const iconBox = document.getElementById('modalIconBox');
   iconBox.className = `w-12 h-12 rounded-2xl bg-gradient-to-br ${p.thumbnailColor || 'from-blue-600 to-blue-700'} flex items-center justify-center text-white text-xl flex-shrink-0 shadow-sm`;
@@ -304,10 +329,13 @@ function openProductModal(productId) {
   // Modal Checkout button
   const checkoutBtn = document.getElementById('modalCheckoutBtn');
   if (checkoutBtn) {
-    if (p.externalCheckoutUrl) {
-      checkoutBtn.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> ${p.externalCheckoutLabel || 'Buka di ModulAI.id'}`;
-      checkoutBtn.onclick = () => window.open(p.externalCheckoutUrl, '_blank');
+    if (isExternal) {
+      const extUrl = p.externalCheckoutUrl || p.appUrl || p.demoUrl || '#';
+      checkoutBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/20 transition-all";
+      checkoutBtn.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> ${p.externalCheckoutLabel || 'Buka di ' + p.name}`;
+      checkoutBtn.onclick = () => window.open(extUrl, '_blank');
     } else {
+      checkoutBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-orange-600/20 transition-all";
       checkoutBtn.innerHTML = `<i class="fa-solid fa-cart-shopping text-sm"></i> Beli Sekarang`;
       checkoutBtn.onclick = () => openCheckoutModalFromCurrent();
     }

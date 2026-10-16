@@ -373,11 +373,24 @@ function openProductFormModal(isEdit = false) {
     heading.innerHTML = '<i class="fa-solid fa-cube text-blue-600"></i> Tambah Produk Baru';
     document.getElementById('editProductId').value = '';
     document.getElementById('productForm').reset();
+    document.getElementById('prodCheckoutType').value = 'BUATDIGITAL';
+    toggleCheckoutFields('BUATDIGITAL');
+    document.getElementById('prodShowPrice').value = 'true';
   }
 }
 
 function closeProductFormModal() {
   document.getElementById('productFormModal').classList.add('hidden');
+}
+
+function toggleCheckoutFields(val) {
+  const el = document.getElementById('externalCheckoutFields');
+  if (!el) return;
+  if (val === 'EXTERNAL') {
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
 }
 
 function editProductModal(id) {
@@ -399,14 +412,25 @@ function editProductModal(id) {
   document.getElementById('prodFullDesc').value = p.fullDesc || '';
   document.getElementById('prodFeatures').value = Array.isArray(p.features) ? p.features.join('\n') : '';
   document.getElementById('prodDemoUrl').value = p.demoUrl || '';
+  
+  // Checkout Type & Show Price
+  const checkoutType = p.checkoutType || (p.externalCheckoutUrl ? 'EXTERNAL' : 'BUATDIGITAL');
+  document.getElementById('prodCheckoutType').value = checkoutType;
+  toggleCheckoutFields(checkoutType);
+
   document.getElementById('prodExternalCheckoutUrl').value = p.externalCheckoutUrl || '';
   document.getElementById('prodExternalCheckoutLabel').value = p.externalCheckoutLabel || '';
+  document.getElementById('prodShowPrice').value = p.showPrice !== false ? 'true' : 'false';
   document.getElementById('prodIsPublished').value = p.isPublished ? 'true' : 'false';
 }
 
 async function handleSaveProduct(e) {
   e.preventDefault();
   const id = document.getElementById('editProductId').value;
+
+  const checkoutType = document.getElementById('prodCheckoutType').value;
+  const externalUrl = document.getElementById('prodExternalCheckoutUrl').value.trim();
+  const externalLabel = document.getElementById('prodExternalCheckoutLabel').value.trim();
 
   const payload = {
     name: document.getElementById('prodName').value.trim(),
@@ -420,8 +444,10 @@ async function handleSaveProduct(e) {
     fullDesc: document.getElementById('prodFullDesc').value.trim(),
     features: document.getElementById('prodFeatures').value.split('\n').filter(Boolean),
     demoUrl: document.getElementById('prodDemoUrl').value.trim(),
-    externalCheckoutUrl: document.getElementById('prodExternalCheckoutUrl').value.trim(),
-    externalCheckoutLabel: document.getElementById('prodExternalCheckoutLabel').value.trim(),
+    checkoutType: checkoutType,
+    externalCheckoutUrl: checkoutType === 'EXTERNAL' ? externalUrl : '',
+    externalCheckoutLabel: checkoutType === 'EXTERNAL' ? externalLabel : '',
+    showPrice: document.getElementById('prodShowPrice').value === 'true',
     isPublished: document.getElementById('prodIsPublished').value === 'true'
   };
 
