@@ -277,7 +277,7 @@ function renderRecentSales(sales) {
 // ----------------------------------------------------
 async function loadProducts() {
   try {
-    const res = await fetch('/api/admin/products', { headers: getAuthHeaders() });
+    const res = await fetch(`/api/admin/products?t=${Date.now()}`, { headers: getAuthHeaders() });
     if (res.status === 403) return adminLogout();
     const data = await res.json();
     allProducts = data.products || [];

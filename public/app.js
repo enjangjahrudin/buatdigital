@@ -82,7 +82,7 @@ function loadMidtransScript() {
 async function loadData() {
   try {
     // 1. Load Settings
-    const resSettings = await fetch('/api/settings/public');
+    const resSettings = await fetch(`/api/settings/public?t=${Date.now()}`);
     const dataSettings = await resSettings.json();
     if (dataSettings.settings) {
       siteSettings = dataSettings.settings;
@@ -91,7 +91,7 @@ async function loadData() {
     }
 
     // 2. Load Products
-    const resProducts = await fetch('/api/products');
+    const resProducts = await fetch(`/api/products?t=${Date.now()}`);
     const dataProducts = await resProducts.json();
     allProducts = dataProducts.products || [];
     renderProducts();

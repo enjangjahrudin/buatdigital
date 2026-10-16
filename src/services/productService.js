@@ -191,8 +191,8 @@ class ProductService {
       checkoutType: data.checkoutType || (data.externalCheckoutUrl ? 'EXTERNAL' : 'BUATDIGITAL'), // BUATDIGITAL or EXTERNAL
       externalCheckoutUrl: data.externalCheckoutUrl || '',
       externalCheckoutLabel: data.externalCheckoutLabel || '',
-      showPrice: data.showPrice !== false, // boolean, default true
-      isPublished: data.isPublished !== false,
+      showPrice: data.showPrice !== undefined ? (data.showPrice === true || data.showPrice === 'true') : true,
+      isPublished: data.isPublished !== undefined ? (data.isPublished === true || data.isPublished === 'true') : true,
       orderIndex: products.length + 1,
       totalSalesCount: 0,
       totalRevenue: 0,
@@ -230,8 +230,14 @@ class ProductService {
     p.checkoutType = data.checkoutType !== undefined ? data.checkoutType : (p.checkoutType || (data.externalCheckoutUrl ? 'EXTERNAL' : 'BUATDIGITAL'));
     p.externalCheckoutUrl = data.externalCheckoutUrl !== undefined ? data.externalCheckoutUrl : p.externalCheckoutUrl;
     p.externalCheckoutLabel = data.externalCheckoutLabel !== undefined ? data.externalCheckoutLabel : p.externalCheckoutLabel;
-    p.showPrice = data.showPrice !== undefined ? Boolean(data.showPrice) : (p.showPrice !== false);
-    p.isPublished = data.isPublished !== undefined ? Boolean(data.isPublished) : p.isPublished;
+    if (data.showPrice !== undefined) {
+      p.showPrice = data.showPrice === true || data.showPrice === 'true';
+    } else {
+      p.showPrice = p.showPrice !== false;
+    }
+    if (data.isPublished !== undefined) {
+      p.isPublished = data.isPublished === true || data.isPublished === 'true';
+    }
     p.orderIndex = data.orderIndex !== undefined ? Number(data.orderIndex) : p.orderIndex;
     p.updatedAt = new Date().toISOString();
 
