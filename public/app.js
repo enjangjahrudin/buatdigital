@@ -143,7 +143,48 @@ function setFilter(filter) {
   renderProducts();
 }
 
+function renderHeroSpotlight() {
+  const container = document.getElementById('heroSpotlightContainer');
+  if (!container) return;
+
+  const spotlightProducts = allProducts.slice(0, 3);
+  if (spotlightProducts.length === 0) {
+    container.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">Belum ada produk aktif.</p>';
+    return;
+  }
+
+  container.innerHTML = spotlightProducts.map(p => {
+    const meta = getPricingMeta(p.pricingType);
+    const finalPrice = p.discountPrice || p.price;
+    const isPriceShown = p.showPrice !== false;
+    const badgeLabel = p.pricingType === 'TOKEN' ? 'Token' : (p.pricingType === 'ONETIME' ? 'Lifetime' : meta.label);
+
+    return `
+      <a href="#katalog" class="block p-3.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-gradient-to-br from-slate-50/50 to-white transition-all group/item shadow-sm">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${p.thumbnailColor || 'from-blue-600 to-indigo-800'} text-white flex items-center justify-center text-lg shadow-sm flex-shrink-0">
+              <i class="fa-solid ${p.icon || 'fa-cubes'}"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 class="text-xs font-bold text-slate-900 group-hover/item:text-blue-600 transition-colors">${p.name.split('-')[0].trim()}</h4>
+                <span class="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.2 rounded font-semibold">${badgeLabel}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 line-clamp-1">${p.shortDesc || ''}</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold ${isPriceShown ? 'text-slate-900' : 'text-slate-500 font-medium'} flex-shrink-0">
+            ${isPriceShown ? formatRupiah(finalPrice) : 'Kustom'}
+          </span>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
 function renderProducts() {
+  renderHeroSpotlight();
   const container = document.getElementById('productsGrid');
   if (!container) return;
 
