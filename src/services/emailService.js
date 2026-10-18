@@ -40,7 +40,8 @@ class EmailService {
       secure: isSecure,
       auth: { user, pass },
       tls: {
-        rejectUnauthorized: false // Menghindari kendala self-signed cert jika menggunakan mail server lokal aaPanel
+        rejectUnauthorized: false, // Menghindari kendala self-signed cert jika menggunakan mail server lokal aaPanel
+        checkServerIdentity: () => undefined // Mencegah error hostname mismatch (cth: buatdigital.id vs mail.buatdigital.id)
       }
     });
   }
