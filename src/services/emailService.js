@@ -1,8 +1,23 @@
-const nodemailer = require('nodemailer');
 const adminService = require('./adminService');
+
+let nodemailer = null;
+try {
+  nodemailer = require('nodemailer');
+} catch (e) {
+  // Will prompt when transporter is requested
+}
 
 class EmailService {
   getTransporter() {
+    if (!nodemailer) {
+      try {
+        nodemailer = require('nodemailer');
+      } catch (err) {
+        console.warn('[EmailService] Package nodemailer belum terpasang di server. Jalankan `npm install`.');
+        return null;
+      }
+    }
+
     const settings = adminService.getSettings();
     const smtp = settings.smtp || {};
 
