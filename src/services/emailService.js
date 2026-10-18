@@ -17,11 +17,16 @@ class EmailService {
       return null;
     }
 
+    const isSecure = (process.env.SMTP_SECURE === 'true') || smtp.secure || (port === 465);
+
     return nodemailer.createTransport({
       host,
       port,
-      secure,
-      auth: { user, pass }
+      secure: isSecure,
+      auth: { user, pass },
+      tls: {
+        rejectUnauthorized: false // Menghindari kendala self-signed cert jika menggunakan mail server lokal aaPanel
+      }
     });
   }
 
@@ -43,7 +48,7 @@ class EmailService {
 
     const targetAppUrl = appUrl || (productName.toLowerCase().includes('cek desil') ? 'https://cekdesil.buatdigital.id' : 'https://buatdigital.id');
     const settings = adminService.getSettings();
-    const fromAddress = process.env.SMTP_FROM || settings.smtp?.from || `"BuatDigital.id" <${process.env.SMTP_USER || settings.smtp?.user || 'kontak@buatdigital.id'}>`;
+    const fromAddress = process.env.SMTP_FROM || settings.smtp?.from || `"BuatDigital.id" <${process.env.SMTP_USER || settings.smtp?.user || 'noreply@buatdigital.id'}>`;
 
     const htmlContent = `
     <!DOCTYPE html>
