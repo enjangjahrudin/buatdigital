@@ -664,6 +664,24 @@ async function loadSettings() {
     document.getElementById('settingWaNumber').value = s.whatsappNumber || '';
     document.getElementById('settingWaTemplate').value = s.whatsappOrderTemplate || '';
     document.getElementById('settingContactEmail').value = s.contactEmail || '';
+
+    // SMTP Email Fields
+    const smtp = s.smtp || {};
+    if (document.getElementById('settingSmtpHost')) {
+      document.getElementById('settingSmtpHost').value = smtp.host || 'smtp.gmail.com';
+    }
+    if (document.getElementById('settingSmtpPort')) {
+      document.getElementById('settingSmtpPort').value = smtp.port || 587;
+    }
+    if (document.getElementById('settingSmtpUser')) {
+      document.getElementById('settingSmtpUser').value = smtp.user || '';
+    }
+    if (document.getElementById('settingSmtpPass')) {
+      document.getElementById('settingSmtpPass').value = smtp.pass || '';
+    }
+    if (document.getElementById('settingSmtpFrom')) {
+      document.getElementById('settingSmtpFrom').value = smtp.from || 'BuatDigital.id <kontak@buatdigital.id>';
+    }
   } catch (err) {
     console.error('Error loading settings:', err);
   }
@@ -680,9 +698,19 @@ async function handleSaveSettings(e) {
     paymentMode: document.getElementById('settingPaymentMode')?.value || 'SYAHAJA_AND_WA',
 
     // WhatsApp & Contact Settings
-    whatsappNumber: document.getElementById('settingWaNumber').value.trim(),
-    whatsappOrderTemplate: document.getElementById('settingWaTemplate').value.trim(),
-    contactEmail: document.getElementById('settingContactEmail').value.trim()
+    whatsappNumber: document.getElementById('settingWaNumber')?.value.trim() || '',
+    whatsappOrderTemplate: document.getElementById('settingWaTemplate')?.value.trim() || '',
+    contactEmail: document.getElementById('settingContactEmail')?.value.trim() || '',
+
+    // SMTP Settings
+    smtp: {
+      host: document.getElementById('settingSmtpHost')?.value.trim() || 'smtp.gmail.com',
+      port: Number(document.getElementById('settingSmtpPort')?.value) || 587,
+      secure: false,
+      user: document.getElementById('settingSmtpUser')?.value.trim() || '',
+      pass: document.getElementById('settingSmtpPass')?.value.trim() || '',
+      from: document.getElementById('settingSmtpFrom')?.value.trim() || 'BuatDigital.id <kontak@buatdigital.id>'
+    }
   };
 
   try {
@@ -692,7 +720,7 @@ async function handleSaveSettings(e) {
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Gagal menyimpan pengaturan');
-    alert('Pengaturan situs & Syahaja Pay berhasil disimpan!');
+    alert('Pengaturan situs, Syahaja Pay & SMTP berhasil disimpan!');
     loadSettings();
   } catch (err) {
     alert('Error: ' + err.message);

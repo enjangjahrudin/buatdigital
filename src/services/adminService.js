@@ -55,6 +55,16 @@ class AdminService {
       if (s.enableMidtrans === undefined) s.enableMidtrans = true;
       if (s.midtransIsProduction === undefined) s.midtransIsProduction = false;
       if (!s.paymentMode) s.paymentMode = 'SYAHAJA_AND_WA';
+      if (!s.smtp) {
+        s.smtp = {
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          user: '',
+          pass: '',
+          from: 'BuatDigital.id <kontak@buatdigital.id>'
+        };
+      }
       return s;
     } catch (err) {
       console.error('Error reading settings:', err);
@@ -136,6 +146,18 @@ class AdminService {
     if (data.midtransIsProduction !== undefined) s.midtransIsProduction = Boolean(data.midtransIsProduction);
     if (data.enableMidtrans !== undefined) s.enableMidtrans = Boolean(data.enableMidtrans);
     if (data.paymentMode !== undefined) s.paymentMode = data.paymentMode;
+
+    // SMTP Email Notification Settings
+    if (data.smtp !== undefined) {
+      s.smtp = {
+        host: (data.smtp.host || 'smtp.gmail.com').trim(),
+        port: Number(data.smtp.port || 587),
+        secure: Boolean(data.smtp.secure),
+        user: (data.smtp.user || '').trim(),
+        pass: data.smtp.pass !== undefined ? data.smtp.pass.trim() : (s.smtp?.pass || ''),
+        from: (data.smtp.from || 'BuatDigital.id <kontak@buatdigital.id>').trim()
+      };
+    }
 
     s.updatedAt = new Date().toISOString();
     this.saveSettings(s);

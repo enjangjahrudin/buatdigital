@@ -3,6 +3,7 @@ const path = require('path');
 const { SyahajaClient } = require('./syahajaClient');
 const adminService = require('./adminService');
 const salesService = require('./salesService');
+const emailService = require('./emailService');
 
 class SyahajaService {
   getClient() {
@@ -116,42 +117,94 @@ class SyahajaService {
     sale.updatedAt = new Date().toISOString();
     salesService.saveSales(sales);
 
-    // Auto-provision license if applicable (e.g. CekDesilMassal)
-    if (isSuccess && sale.customerEmail && sale.productName && sale.productName.toLowerCase().includes('cek desil')) {
-      this.autoProvisionCekDesilLicense(sale.customerEmail, sale.customerName, orderId);
+    // Auto-provision license & send confirmation email if payment is successful
+    if (isSuccess && sale.customerEmail) {
+      // 1. Auto-Provision License for CekDesilMassal if applicable
+      if (sale.productName && sale.productName.toLowerCase().includes('cek desil')) {
+        this.autoProvisionCekDesilLicense(sale.customerEmail, sale.customerName, orderId);
+      }
+
+      // 2. Dispatch automated confirmation & license access email
+      try {
+        const appUrl = (sale.productName && sale.productName.toLowerCase().includes('cek desil'))
+          ? 'https://cekdesil.buatdigital.id'
+          : 'https://buatdigital.id';
+
+        emailService.sendOrderLicenseEmail({
+          customerName: sale.customerName,
+          customerEmail: sale.customerEmail,
+          productName: sale.productName,
+          orderId: sale.id || orderId,
+          amount: sale.amount,
+          appUrl
+        }).catch(err => {
+          console.error('[Email Dispatch Background Error]:', err.message);
+        });
+      } catch (mailErr) {
+        console.error('[Email Dispatch Error]:', mailErr.message);
+      }
     }
 
     return { success: true, status: sale.status };
   }
 
   /**
-   * Automatically adds buyer's email into CekDesilMassal licenses database upon successful payment
+   * Automatically adds buyer's email into CekDesilMassal licenses database upon successful payment.
+   * Checks multiple common paths across local dev & Linux VPS deployment.
    */
   autoProvisionCekDesilLicense(email, name, orderId) {
     try {
-      const cekDesilLicenseFile = path.join(__dirname, '../../../CekDesilMassal/data/licenses.json');
-      if (fs.existsSync(cekDesilLicenseFile)) {
-        const raw = fs.readFileSync(cekDesilLicenseFile, 'utf8');
-        const licenses = JSON.parse(raw || '[]');
+      const candidates = [
+        path.join(__dirname, '../../../CekDesilMassal/data/licenses.json'),
+        path.join(__dirname, '../../../cekdesil.buatdigital.id/data/licenses.json'),
+        path.join(__dirname, '../../../cekdesil/data/licenses.json'),
+        '/www/wwwroot/cekdesil.buatdigital.id/data/licenses.json',
+        '/www/wwwroot/CekDesilMassal/data/licenses.json',
+        '/www/wwwroot/cekdesil/data/licenses.json'
+      ];
 
-        const cleanEmail = String(email).trim().toLowerCase();
-        if (!licenses.some(l => l.email.toLowerCase() === cleanEmail)) {
-          licenses.push({
-            id: require('crypto').randomUUID(),
-            email: cleanEmail,
-            name: name || cleanEmail.split('@')[0],
-            isActive: true,
-            createdAt: new Date().toISOString(),
-            notes: `Auto-activated via Syahaja Pay Order #${orderId}`,
-            activeSessionToken: null,
-            lastLoginAt: null,
-            lastDeviceInfo: null,
-            lastIp: null,
-            loginCount: 0
-          });
-          fs.writeFileSync(cekDesilLicenseFile, JSON.stringify(licenses, null, 2));
-          console.log(`[Auto-License] Successfully created CekDesilMassal license for ${cleanEmail}!`);
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      let updatedCount = 0;
+
+      for (const targetFile of candidates) {
+        try {
+          const targetDir = path.dirname(targetFile);
+          if (fs.existsSync(targetDir)) {
+            let licenses = [];
+            if (fs.existsSync(targetFile)) {
+              const raw = fs.readFileSync(targetFile, 'utf8');
+              licenses = JSON.parse(raw || '[]');
+            }
+
+            if (!licenses.some(l => l.email.toLowerCase() === cleanEmail)) {
+              licenses.push({
+                id: require('crypto').randomUUID(),
+                email: cleanEmail,
+                name: name || cleanEmail.split('@')[0],
+                isActive: true,
+                createdAt: new Date().toISOString(),
+                notes: `Auto-activated via Syahaja Pay Order #${orderId}`,
+                activeSessionToken: null,
+                lastLoginAt: null,
+                lastDeviceInfo: null,
+                lastIp: null,
+                loginCount: 0
+              });
+              fs.writeFileSync(targetFile, JSON.stringify(licenses, null, 2));
+              console.log(`[Auto-License] Created CekDesilMassal license for ${cleanEmail} at ${targetFile}`);
+              updatedCount++;
+            } else {
+              console.log(`[Auto-License] License already exists for ${cleanEmail} at ${targetFile}`);
+              updatedCount++;
+            }
+          }
+        } catch (fileErr) {
+          console.warn(`[Auto-License] Skipped checking ${targetFile}:`, fileErr.message);
         }
+      }
+
+      if (updatedCount === 0) {
+        console.warn(`[Auto-License Warning]: No valid CekDesilMassal data directory found to store license for ${cleanEmail}`);
       }
     } catch (err) {
       console.error('[Auto-License Error]:', err.message);
