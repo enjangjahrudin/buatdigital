@@ -92,7 +92,7 @@ class SalesService {
     const sales = this.getAllSales();
 
     const newSale = {
-      id: crypto.randomUUID(),
+      id: data.id || crypto.randomUUID(),
       productId: data.productId || null,
       productName: data.productName || 'Produk Digital',
       customerName: data.customerName || 'Pelanggan',

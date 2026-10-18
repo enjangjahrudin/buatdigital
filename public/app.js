@@ -446,9 +446,9 @@ async function handleProcessCheckout(e) {
     return;
   }
 
-  // Option 2: Midtrans Payment Gateway (QRIS, VA Bank, E-Wallet)
+  // Option 2: Syahaja Pay Payment Gateway (QRIS, VA Bank, E-Wallet)
   btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghubungkan ke Midtrans...';
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghubungkan ke Syahaja Pay...';
 
   try {
     const res = await fetch('/api/payment/create-snap', {

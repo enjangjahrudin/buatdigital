@@ -23,12 +23,17 @@ function initSettings() {
       whatsappNumber: '6281234567890',
       whatsappOrderTemplate: 'Halo BuatDigital.id, saya tertarik untuk memesan produk *{product_name}* dengan harga {product_price}. Mohon info cara pembayarannya.',
       contactEmail: 'kontak@buatdigital.id',
+      // Syahaja Pay Orchestrator Configuration
+      syahajaGatewayUrl: 'https://sypay.buatdigital.id',
+      syahajaClientKey: 'syh_live_buatdigital_store_key',
+      syahajaSecretKey: 'sec_buatdigital_store_secret_9944',
+      enableSyahajaPay: true,
       // Midtrans Payment Gateway Configuration
       midtransServerKey: '', // e.g. SB-Mid-server-xxxx
       midtransClientKey: '', // e.g. SB-Mid-client-xxxx
       midtransIsProduction: false,
       enableMidtrans: true,
-      paymentMode: 'MIDTRANS_AND_WA', // MIDTRANS_AND_WA, MIDTRANS_ONLY, WA_ONLY
+      paymentMode: 'SYAHAJA_AND_WA', // SYAHAJA_AND_WA, SYAHAJA_ONLY, WA_ONLY
       updatedAt: new Date().toISOString()
     };
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(defaultSettings, null, 2));
@@ -43,9 +48,13 @@ class AdminService {
       if (!fs.existsSync(SETTINGS_FILE)) initSettings();
       const content = fs.readFileSync(SETTINGS_FILE, 'utf8');
       const s = JSON.parse(content || '{}');
+      if (s.enableSyahajaPay === undefined) s.enableSyahajaPay = true;
+      if (!s.syahajaGatewayUrl) s.syahajaGatewayUrl = 'https://sypay.buatdigital.id';
+      if (!s.syahajaClientKey) s.syahajaClientKey = 'syh_live_buatdigital_store_key';
+      if (!s.syahajaSecretKey) s.syahajaSecretKey = 'sec_buatdigital_store_secret_9944';
       if (s.enableMidtrans === undefined) s.enableMidtrans = true;
       if (s.midtransIsProduction === undefined) s.midtransIsProduction = false;
-      if (!s.paymentMode) s.paymentMode = 'MIDTRANS_AND_WA';
+      if (!s.paymentMode) s.paymentMode = 'SYAHAJA_AND_WA';
       return s;
     } catch (err) {
       console.error('Error reading settings:', err);
@@ -65,11 +74,14 @@ class AdminService {
       whatsappNumber: s.whatsappNumber,
       whatsappOrderTemplate: s.whatsappOrderTemplate,
       contactEmail: s.contactEmail,
+      // Syahaja Pay settings
+      enableSyahajaPay: !!(s.enableSyahajaPay && s.syahajaClientKey),
+      syahajaGatewayUrl: s.syahajaGatewayUrl || 'https://sypay.buatdigital.id',
       // Public Midtrans keys
       enableMidtrans: !!(s.enableMidtrans && s.midtransClientKey),
       midtransClientKey: s.midtransClientKey || '',
       midtransIsProduction: s.midtransIsProduction || false,
-      paymentMode: s.paymentMode || 'MIDTRANS_AND_WA'
+      paymentMode: s.paymentMode || 'SYAHAJA_AND_WA'
     };
   }
 
@@ -111,6 +123,12 @@ class AdminService {
     if (data.whatsappNumber !== undefined) s.whatsappNumber = data.whatsappNumber.replace(/[^0-9]/g, '');
     if (data.whatsappOrderTemplate !== undefined) s.whatsappOrderTemplate = data.whatsappOrderTemplate;
     if (data.contactEmail !== undefined) s.contactEmail = data.contactEmail;
+
+    // Syahaja Pay Orchestrator Settings
+    if (data.syahajaGatewayUrl !== undefined) s.syahajaGatewayUrl = data.syahajaGatewayUrl.trim();
+    if (data.syahajaClientKey !== undefined) s.syahajaClientKey = data.syahajaClientKey.trim();
+    if (data.syahajaSecretKey !== undefined) s.syahajaSecretKey = data.syahajaSecretKey.trim();
+    if (data.enableSyahajaPay !== undefined) s.enableSyahajaPay = Boolean(data.enableSyahajaPay);
 
     // Midtrans Settings
     if (data.midtransServerKey !== undefined) s.midtransServerKey = data.midtransServerKey.trim();

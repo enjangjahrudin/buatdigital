@@ -8,6 +8,7 @@ const productService = require('./services/productService');
 const salesService = require('./services/salesService');
 const adminService = require('./services/adminService');
 const midtransService = require('./services/midtransService');
+const syahajaService = require('./services/syahajaService');
 const { requireAdminAuth } = require('./middleware/authMiddleware');
 
 const app = express();
@@ -68,10 +69,10 @@ app.get('/login', (req, res) => {
 });
 
 // ==========================================
-// 💳 MIDTRANS PAYMENT GATEWAY ENDPOINTS
+// 💳 SYAHAJA PAY & PAYMENT GATEWAY ENDPOINTS
 // ==========================================
 
-// Create Snap Token for checkout
+// Create Transaction / Invoice for checkout
 app.post('/api/payment/create-snap', checkoutLimiter, async (req, res) => {
   try {
     const { productId, customer } = req.body;
@@ -84,15 +85,48 @@ app.post('/api/payment/create-snap', checkoutLimiter, async (req, res) => {
       return res.status(404).json({ error: 'Produk tidak ditemukan.' });
     }
 
+    const settings = adminService.getSettings();
+
+    // Skenario A: Use Syahaja Pay Orchestrator
+    if (settings.enableSyahajaPay !== false) {
+      try {
+        const result = await syahajaService.createTransaction({ product, customer });
+        return res.json(result);
+      } catch (syahajaErr) {
+        console.error('Syahaja Pay Create Transaction Error:', syahajaErr.message);
+        // If Midtrans keys are configured, fallback to direct Midtrans
+        if (settings.midtransServerKey) {
+          console.warn('Falling back to direct Midtrans...');
+          const result = await midtransService.createTransaction({ product, customer });
+          return res.json(result);
+        }
+        throw syahajaErr;
+      }
+    }
+
+    // Direct Midtrans Fallback
     const result = await midtransService.createTransaction({ product, customer });
     res.json(result);
   } catch (err) {
-    console.error('Midtrans Create Snap Error:', err.message);
+    console.error('Payment Gateway Create Transaction Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Midtrans Webhook Notification Listener
+// Syahaja Pay Webhook Listener (Skenario A)
+app.post('/api/payment/syahaja-webhook', async (req, res) => {
+  try {
+    const signature = req.headers['x-syahaja-signature'];
+    const result = await syahajaService.handleWebhook(req.body, signature);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error('Syahaja Webhook Error:', err.message);
+    const status = err.message === 'Invalid signature' ? 401 : 500;
+    res.status(status).json({ error: err.message });
+  }
+});
+
+// Midtrans Legacy Webhook Notification Listener
 app.post('/api/payment/notification', async (req, res) => {
   try {
     const result = await midtransService.handleNotification(req.body);

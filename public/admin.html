@@ -328,63 +328,62 @@
       <!-- ============================================== -->
       <section id="tabSettings" class="hidden space-y-6">
 
-        <!-- Midtrans Payment Gateway Settings Card -->
+        <!-- Syahaja Pay Orchestrator Settings Card -->
         <div class="max-w-2xl bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
           <div class="flex items-center justify-between">
             <div>
               <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-credit-card text-blue-600 text-lg"></i> Konfigurasi Midtrans Payment Gateway
+                <i class="fa-solid fa-wallet text-blue-600 text-lg"></i> Konfigurasi Syahaja Pay Gateway
               </h2>
-              <p class="text-xs text-slate-500 mt-1">Integrasi pembayaran otomatis via QRIS, Virtual Account Bank, dan E-Wallet.</p>
+              <p class="text-xs text-slate-500 mt-1">Integrasi pembayaran tersentralisasi via Syahaja Pay Orchestrator (QRIS, VA Bank & E-Wallet).</p>
             </div>
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-              Midtrans Snap
+              Skenario A &bull; Terhubung
             </span>
           </div>
 
           <form id="midtransSettingsForm" onsubmit="handleSaveSettings(event)" class="space-y-4 text-xs">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block font-semibold text-slate-700 mb-1">Environment Midtrans *</label>
-                <select id="settingMidtransIsProd" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
-                  <option value="false">Sandbox (Mode Testing)</option>
-                  <option value="true">Production (Live Transaksi Nyata)</option>
-                </select>
+                <label class="block font-semibold text-slate-700 mb-1">Gateway Endpoint URL *</label>
+                <input type="url" id="settingSyahajaGatewayUrl" required placeholder="https://sypay.buatdigital.id"
+                       class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl font-mono focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <p class="text-[10px] text-slate-400 mt-1">URL server Syahaja Pay yang aktif.</p>
               </div>
               <div>
                 <label class="block font-semibold text-slate-700 mb-1">Mode Pembayaran di Web</label>
                 <select id="settingPaymentMode" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
-                  <option value="MIDTRANS_AND_WA">Otomatis Midtrans & Manual WhatsApp</option>
-                  <option value="MIDTRANS_ONLY">Khusus Midtrans Otomatis</option>
+                  <option value="SYAHAJA_AND_WA">Otomatis Syahaja Pay & Manual WhatsApp</option>
+                  <option value="SYAHAJA_ONLY">Khusus Syahaja Pay Otomatis</option>
                   <option value="WA_ONLY">Khusus Manual WhatsApp</option>
                 </select>
               </div>
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">Midtrans Server Key *</label>
-              <input type="password" id="settingMidtransServerKey" placeholder="SB-Mid-server-xxxxxxxxxxxx" 
+              <label class="block font-semibold text-slate-700 mb-1">Syahaja Client Key *</label>
+              <input type="text" id="settingSyahajaClientKey" required placeholder="syh_live_buatdigital_store_key" 
                      class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl font-mono focus:outline-none focus:ring-2 focus:ring-blue-600">
-              <p class="text-[10px] text-slate-400 mt-1">Dapatkan Server Key di Dashboard Midtrans &gt; Settings &gt; Access Keys.</p>
+              <p class="text-[10px] text-slate-400 mt-1">Client API Key yang terdaftar di database Syahaja Pay.</p>
             </div>
 
             <div>
-              <label class="block font-semibold text-slate-700 mb-1">Midtrans Client Key *</label>
-              <input type="text" id="settingMidtransClientKey" placeholder="SB-Mid-client-xxxxxxxxxxxx" 
+              <label class="block font-semibold text-slate-700 mb-1">Syahaja Secret Key (HMAC Signing) *</label>
+              <input type="password" id="settingSyahajaSecretKey" required placeholder="sec_buatdigital_store_secret_9944" 
                      class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl font-mono focus:outline-none focus:ring-2 focus:ring-blue-600">
-              <p class="text-[10px] text-slate-400 mt-1">Dapatkan Client Key di Dashboard Midtrans &gt; Settings &gt; Access Keys.</p>
+              <p class="text-[10px] text-slate-400 mt-1">Kunci rahasia untuk memverifikasi keaslian webhook notifikasi.</p>
             </div>
 
             <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600 space-y-1">
-              <p class="font-bold text-slate-800"><i class="fa-solid fa-link text-blue-600"></i> URL Webhook Notification Midtrans:</p>
+              <p class="font-bold text-slate-800"><i class="fa-solid fa-link text-blue-600"></i> URL Webhook Listener BuatDigital.id:</p>
               <code class="block p-1.5 bg-white border border-slate-200 rounded text-[11px] font-mono text-blue-600 select-all">
-                https://domain-anda.com/api/payment/notification
+                https://buatdigital.id/api/payment/syahaja-webhook
               </code>
-              <p class="text-[10px] text-slate-400">Salin URL di atas ke menu Midtrans &gt; Settings &gt; Configuration &gt; Payment Notification URL.</p>
+              <p class="text-[10px] text-slate-400">Endpoint ini menerima konfirmasi pembayaran dari Syahaja Pay dan mengaktifkan lisensi secara otomatis.</p>
             </div>
 
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs shadow-sm">
-              <i class="fa-solid fa-save mr-1"></i> Simpan Konfigurasi Midtrans
+              <i class="fa-solid fa-save mr-1"></i> Simpan Konfigurasi Syahaja Pay
             </button>
           </form>
         </div>

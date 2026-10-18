@@ -646,11 +646,19 @@ async function loadSettings() {
     const data = await res.json();
     const s = data.settings || {};
 
-    // Midtrans Form Fields
-    document.getElementById('settingMidtransIsProd').value = String(Boolean(s.midtransIsProduction));
-    document.getElementById('settingPaymentMode').value = s.paymentMode || 'MIDTRANS_AND_WA';
-    document.getElementById('settingMidtransServerKey').value = s.midtransServerKey || '';
-    document.getElementById('settingMidtransClientKey').value = s.midtransClientKey || '';
+    // Syahaja Pay Form Fields
+    if (document.getElementById('settingSyahajaGatewayUrl')) {
+      document.getElementById('settingSyahajaGatewayUrl').value = s.syahajaGatewayUrl || 'https://sypay.buatdigital.id';
+    }
+    if (document.getElementById('settingSyahajaClientKey')) {
+      document.getElementById('settingSyahajaClientKey').value = s.syahajaClientKey || 'syh_live_buatdigital_store_key';
+    }
+    if (document.getElementById('settingSyahajaSecretKey')) {
+      document.getElementById('settingSyahajaSecretKey').value = s.syahajaSecretKey || 'sec_buatdigital_store_secret_9944';
+    }
+    if (document.getElementById('settingPaymentMode')) {
+      document.getElementById('settingPaymentMode').value = s.paymentMode || 'SYAHAJA_AND_WA';
+    }
 
     // WhatsApp Fields
     document.getElementById('settingWaNumber').value = s.whatsappNumber || '';
@@ -664,12 +672,12 @@ async function loadSettings() {
 async function handleSaveSettings(e) {
   e.preventDefault();
   const payload = {
-    // Midtrans Settings
-    midtransIsProduction: document.getElementById('settingMidtransIsProd').value === 'true',
-    paymentMode: document.getElementById('settingPaymentMode').value,
-    midtransServerKey: document.getElementById('settingMidtransServerKey').value.trim(),
-    midtransClientKey: document.getElementById('settingMidtransClientKey').value.trim(),
-    enableMidtrans: true,
+    // Syahaja Pay Settings
+    syahajaGatewayUrl: document.getElementById('settingSyahajaGatewayUrl')?.value.trim() || 'https://sypay.buatdigital.id',
+    syahajaClientKey: document.getElementById('settingSyahajaClientKey')?.value.trim() || 'syh_live_buatdigital_store_key',
+    syahajaSecretKey: document.getElementById('settingSyahajaSecretKey')?.value.trim() || 'sec_buatdigital_store_secret_9944',
+    enableSyahajaPay: true,
+    paymentMode: document.getElementById('settingPaymentMode')?.value || 'SYAHAJA_AND_WA',
 
     // WhatsApp & Contact Settings
     whatsappNumber: document.getElementById('settingWaNumber').value.trim(),
@@ -684,7 +692,7 @@ async function handleSaveSettings(e) {
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Gagal menyimpan pengaturan');
-    alert('Pengaturan situs & Midtrans berhasil disimpan!');
+    alert('Pengaturan situs & Syahaja Pay berhasil disimpan!');
     loadSettings();
   } catch (err) {
     alert('Error: ' + err.message);
