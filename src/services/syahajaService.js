@@ -65,7 +65,7 @@ class SyahajaService {
       success: true,
       invoiceId,
       paymentUrl: invoice.payment_url,
-      redirectUrl: invoice.payment_url,
+      redirectUrl: invoice.snap_redirect_url || invoice.payment_url,
       orderId
     };
   }
